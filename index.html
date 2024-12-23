@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edgy Phrase Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #555;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Edgy Phrase Generator</h1>
+  <p>Enter a word or prompt to get started:</p>
+  <input type="text" id="prompt" placeholder="Type something...">
+  <button onclick="generatePhrase()">Generate</button>
+  <p id="result"></p>
+
+  <script>
+    async function generatePhrase() {
+      const prompt = document.getElementById("prompt").value;
+      if (!prompt) {
+        document.getElementById("result").textContent = "Please enter a prompt!";
+        return;
+      }
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer YOUR_OPENAI_API_KEY`
+          },
+          body: JSON.stringify({
+            model: "text-davinci-003",
+            prompt: `Create an edgy "not like the other girls" phrase that includes the word "${prompt}".`,
+            max_tokens: 50
+          })
+        });
+
+        const data = await response.json();
+        const edgyPhrase = data.choices[0].text.trim();
+        document.getElementById("result").textContent = edgyPhrase;
+      } catch (error) {
+        document.getElementById("result").textContent = "Error generating phrase!";
+      }
+    }
+  </script>
+</body>
+</html>
